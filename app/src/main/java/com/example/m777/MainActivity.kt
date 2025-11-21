@@ -12,16 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.m777.R
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.isSystemInDarkTheme
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var darkTheme by remember { mutableStateOf(false) }
+            // Получение системной темы
+            val isDarkTheme = isSystemInDarkTheme()
 
             val lightColors = lightColorScheme(
                 primary = Color(0xFF4CAF50),
@@ -34,19 +35,17 @@ class MainActivity : ComponentActivity() {
                 background = Color(0xFF121212)
             )
 
+            // Выбор цветовой схемы в зависимости от системной темы
+            val colorScheme = if (isDarkTheme) darkColors else lightColors
+
             MaterialTheme(
-                colorScheme = if (darkTheme) darkColors else lightColors
+                colorScheme = colorScheme
             ) {
                 Scaffold(
                     topBar = {
                         TopAppBar(
-                            title = { Text("Мемы") },
-                            actions = {
-                                Switch(
-                                    checked = darkTheme,
-                                    onCheckedChange = { darkTheme = it }
-                                )
-                            }
+                            title = { Text("Мемы") }
+                            // Убрали переключатель темы
                         )
                     }
                 ) { padding ->
@@ -59,7 +58,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun SuperheroesList(modifier: Modifier = Modifier) {
-
     val heroes = listOf(
         Hero("лысый кот", "Наш герой", R.drawable.hero1),
         Hero("who is he?", "who is he?", R.drawable.hero2),
@@ -69,7 +67,10 @@ fun SuperheroesList(modifier: Modifier = Modifier) {
         Hero("странный кот", "кот был сдела с чата гпт", R.drawable.hero6)
     )
 
-    Column(modifier = modifier.padding(8.dp)) {
+    Column(
+        modifier = modifier
+            .padding(8.dp)
+    ) {
         heroes.forEach {
             HeroCard(it)
             Spacer(Modifier.height(12.dp))
@@ -90,7 +91,6 @@ fun HeroCard(hero: Hero) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(Modifier.padding(12.dp)) {
-
             Image(
                 painter = painterResource(id = hero.image),
                 contentDescription = hero.name,
